@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys
 import copy
 import rospy
@@ -56,7 +57,7 @@ class MoveGroupPythonIntefaceTutorial(object):
     ## arm so we set ``group_name = panda_arm``. If you are using a different robot,
     ## you should change this value to the name of your robot arm planning group.
     ## This interface can be used to plan and execute motions on the Panda:
-    group_name = "neck"
+    group_name = "arm"
     group = moveit_commander.MoveGroupCommander(group_name)
 
     ## We create a `DisplayTrajectory`_ publisher which is used later to publish
@@ -114,11 +115,11 @@ class MoveGroupPythonIntefaceTutorial(object):
     ## thing we want to do is move it to a slightly better configuration.
     # We can get the joint values from the group and adjust some of the values:
     joint_goal = group.get_current_joint_values()
-    joint_goal[0] = 0
-    joint_goal[1] = 0
-    joint_goal[2] = 0
+    joint_goal[0] = -pi/6
+    joint_goal[1] = pi/6
+    joint_goal[2] = -pi/6
     joint_goal[3] = 0
-    joint_goal[4] = 0
+    #joint_goal[4] = 0
     # joint_goal[5] = pi/3
     # joint_goal[6] = 0
 
@@ -151,7 +152,7 @@ class MoveGroupPythonIntefaceTutorial(object):
     ## end-effector:
     pose_goal = geometry_msgs.msg.Pose()
     pose_goal.orientation.w = 1.0
-    pose_goal.position.x = 0.2
+    pose_goal.position.x = 0.1
     pose_goal.position.y = 0.1
     pose_goal.position.z = 0.2
     group.set_pose_target(pose_goal)
@@ -173,7 +174,7 @@ class MoveGroupPythonIntefaceTutorial(object):
     return all_close(pose_goal, current_pose, 0.01)
 
 
-  def plan_cartesian_path(self, scale=1):
+  def plan_cartesian_path(self, scale=0.1):
     # Copy class variables to local variables to make the web tutorials more clear.
     # In practice, you should use the class variables directly unless you have a good
     # reason not to.
@@ -429,13 +430,13 @@ def main():
     cartesian_plan, fraction = tutorial.plan_cartesian_path(scale=-1)
     tutorial.execute_plan(cartesian_plan)
 
-    print "============ Press `Enter` to detach the box from the Panda robot ..."
-    raw_input()
-    tutorial.detach_box()
+    #print "============ Press `Enter` to detach the box from the Panda robot ..."
+    #raw_input()
+    #tutorial.detach_box()
 
-    print "============ Press `Enter` to remove the box from the planning scene ..."
-    raw_input()
-    tutorial.remove_box()
+    #print "============ Press `Enter` to remove the box from the planning scene ..."
+    #raw_input()
+    #tutorial.remove_box()
 
     print "============ Python tutorial demo complete!"
   except rospy.ROSInterruptException:
